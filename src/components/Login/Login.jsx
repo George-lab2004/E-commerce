@@ -57,7 +57,7 @@ console.log("Registered User Data:", values);
           }
 
 return (
-    <div className="container mx-auto px-5">
+    <div className="pt-32 container mx-auto px-5">
     <h1 className='text-main text-2xl'> Login Now</h1>
 {useError ? <div className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
 {useError}

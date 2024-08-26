@@ -20,7 +20,7 @@ export default function Cart() {
   }, []);
 
   return (
-<div className="relative container mx-auto overflow-x-auto shadow-md sm:rounded-lg">
+<div className="pt-12 relative container mx-auto overflow-x-auto shadow-md sm:rounded-lg">
     <h1 className='text-2xl ps-5 font-bold pt-5'> My Wish List:</h1>
 
     <div className="space-y-4">

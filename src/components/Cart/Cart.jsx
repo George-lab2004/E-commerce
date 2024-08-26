@@ -46,7 +46,7 @@ return (
 <>
 
 
-<div className="relative container mx-auto overflow-x-auto shadow-md sm:rounded-lg">
+<div className=" pt-12 relative container mx-auto overflow-x-auto shadow-md sm:rounded-lg">
     <div className="text-right">
         <button onClick={clearAll} className='bg-red-600 text-white px-2 py-3 rounded-md'>clear cart</button>
     </div>

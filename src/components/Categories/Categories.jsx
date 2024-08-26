@@ -21,6 +21,10 @@ export default function Categories() {
         console.log(data?.data.data);
 return (
     <>
+    
+    <div className='pt-12 text-center mt-4 text-green-400 font-bold text-3xl'>
+        <h1>All Categories</h1>
+    </div>
     <div className="container mx-auto flex flex-wrap justify-center items-center">
     {data?.data.data.map(cat => (
     <div className="max-w-sm card rounded overflow-hidden shadow-lg  p-5 lg:w-1/3 sm:w-full"  >

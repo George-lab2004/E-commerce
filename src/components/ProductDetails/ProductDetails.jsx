@@ -8,6 +8,7 @@ import { useParams } from 'react-router-dom'
 import Slider from 'react-slick'
 import Products from '../Products/Products'
 import { CartContext } from '../Context/CartContext';
+import { useQuery } from '@tanstack/react-query';
 export default function ProductDetails() {
     let {id, category} = useParams()
     const [ProductDetails, setProductDetails] = useState({})
@@ -16,7 +17,7 @@ const [errorMessage, seterrorMessage] = useState(null)
 const [relatedProducts, setRelatedProducts] = useState([])
 let {addToCart} = useContext(CartContext)
 
-async function addProductToCart(productId) {
+async function addProductToCarts(productId) {
 await addToCart(productId)
 }
 
@@ -30,7 +31,11 @@ var settings = {
     autoplay:true,
     autoplaySpeed:2000
   };
-
+  let {addProductToCart} = useContext(CartContext)
+async function addToCartNow(productId) {
+ let response =  await addProductToCart(productId)
+ console.log(response);
+}
 async function getProductDetails() {
     return await axios.get(`https://ecommerce.routemisr.com/api/v1/products/${id}`).then((data)=>{
         setProductDetails(data?.data.data)
@@ -88,7 +93,7 @@ return ( <>
             <i className='rating-color fa fa-star'></i>{ProductDetails.ratingsQuantity}
         </div>
         <div className='text-center w-11/12'>
-        <button className='btn bg-main w-full text-white px-3 py-2 rounded-md '>Add to cart</button>
+        <button onClick={()=>addToCartNow(ProductDetails.id)} className='btn bg-main w-full text-white px-3 py-2 rounded-md '>Add to cart</button>
     </div>
 </div>
 </div>
@@ -114,7 +119,7 @@ return ( <>
               </div>
             </Link>
             <div className='text-center'>
-              <button onClick={()=>addProductToCart(details.id)} className='btn bg-main text-white px-3 py-2 rounded-md'>Add to cart</button>
+              <button onClick={()=>addProductToCarts(details.id)} className='btn bg-main text-white px-3 py-2 rounded-md'>Add to cart</button>
             </div>
           </div>
         </div>

@@ -25,7 +25,7 @@ export default function Brands() {
 return (
     <>
 
-        <div className='text-center mt-4 text-green-400 font-bold text-3xl'>
+        <div className='pt-12 text-center mt-4 text-green-400 font-bold text-3xl'>
         <h1>All Brands</h1>
     </div>
     <div className='container mx-auto flex flex-wrap px-10'>
