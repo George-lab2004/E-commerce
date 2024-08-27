@@ -21,7 +21,7 @@ export default function Login() {
 
     let mySchema = Yup.object({
       email:Yup.string().required("email is required").email("invalid email"),
-      password:Yup.string().required("Password is required").matches(/^[A-Z][a-z0-9]{5,8}$/, "password isnt valid"),
+      password:Yup.string().required("Password is required").matches(/^[A-Z][a-z0-9]{5,20}$/, "password isnt valid"),
     })
 
     let formik = useFormik({
@@ -35,7 +35,13 @@ export default function Login() {
         }
         })
 
+async function ForgetPassword() {
+    setisLoading(true)
 
+    navigate("/Forget")
+    setisLoading(false)
+
+}
 
         async function loginForm(values) {
             setisLoading(true)
@@ -111,7 +117,7 @@ return (
                 </div>
             ) : null}
         </div>
-
+<div className='flex items-center justify-between'>
         <div className='text-end my-5'>
             {isLoading?
             <button
@@ -131,6 +137,13 @@ return (
             
 
         </div>
+
+        <button onClick={ForgetPassword} className='bg-main text-white rounded-lg px-5 py-2'>
+            ForgetPassword
+            </button> 
+    
+    </div>
     </form>
+
 </div>)    
 }

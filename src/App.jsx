@@ -16,6 +16,10 @@ import ProtectedAuth from './components/ProtectedAuth/ProtectedAuth.jsx';
 import ProductDetails from './components/ProductDetails/ProductDetails.jsx';
 import { Toaster } from "react-hot-toast"
 import WishList from './components/WishList/WishList.jsx';
+import ForgetPassword from './components/ForgetPassword/ForgetPassword.jsx';
+import Reset from './components/Reset-Code/Reset.jsx';
+import UpPs from './components/Update-Password/UpPs.jsx';
+
 
 function App() {
   const queryClient = new QueryClient()
@@ -25,6 +29,10 @@ function App() {
     path: "", element: <Layout />, children: [
       { index: true, element: <ProtectedRoutes><Home /></ProtectedRoutes> },
       { path: "login", element: <ProtectedAuth><Login /></ProtectedAuth>  },
+      { path: "Forget", element: <ProtectedAuth><ForgetPassword/></ProtectedAuth>  },
+      { path: "Code", element: <ProtectedAuth><Reset/></ProtectedAuth>  },
+      { path: "update", element: <ProtectedAuth><UpPs/></ProtectedAuth>  },
+
       { path: "register", element: <ProtectedAuth><Register /></ProtectedAuth> },
       { path: "cart", element:<ProtectedRoutes><Cart /></ProtectedRoutes>  },
       { path: "wishlist", element:<ProtectedRoutes><WishList /></ProtectedRoutes>  },

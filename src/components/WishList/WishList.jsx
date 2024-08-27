@@ -1,10 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { WishlistContext } from '../Context/WishlistContext';
+import { CartContext } from '../Context/CartContext';
 
 export default function Cart() {
   const [WlItems, setWlItems] = useState([]);
   let { getWishListProducts, deleteProduct } = useContext(WishlistContext);
-
+  let {addProductToCart} = useContext(CartContext)
+  async function addToCart(productId) {
+    let response =  await addProductToCart(productId)
+    console.log(response);
+   }
   async function getWL() {
     let response = await getWishListProducts();
     console.log(response, "WL");
@@ -33,6 +38,7 @@ export default function Cart() {
 
                 </div>
                 <button 
+                onClick={()=>addToCart(item.id)}
                     className="bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800">
                     Add to Cart
                 </button>

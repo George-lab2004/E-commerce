@@ -23,7 +23,7 @@ export default function Register() {
     let mySchema = Yup.object({
         name: Yup.string().required("Name is Required").min(3, "cant be less than 3 chars").max(10, "max is 10 chars"),
         email: Yup.string().required("email is required").email("invalid email"),
-        password: Yup.string().required("Password is required").matches(/^[A-Z][a-z0-9]{5,8}$/, "password isnt valid"),
+        password: Yup.string().required("Password is required").matches(/^[A-Z][a-z0-9]{5,200}$/, "password isnt valid ( minimum 6 chars, First letter capital)"),
         rePassword: Yup.string().required("repass is required").oneOf([Yup.ref("password"), "DOESNT MATCH PASSWORD"]),
         phone: Yup.string().required().matches(/^(002)?01[0125][0-9]{8}$/, "phone isnt valid")
     });
@@ -61,7 +61,7 @@ export default function Register() {
     }
 
     return (
-        <div className="container mx-auto px-5">
+        <div className="container mx-auto px-5 pt-20">
             <h1 className='text-main text-2xl'>Register Now</h1>
 
             {/* Display error message if there is one */}
