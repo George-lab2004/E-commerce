@@ -7,6 +7,8 @@ export let CartContext = createContext();
 export default function CartContextProvider(props) {
     const [number, setnumber] = useState(0)
     const [Price, setPrice] = useState(0)
+    const [CartId, setCartId] = useState(null)
+
 let headers = {
     token : localStorage.getItem("userToken")
 }
@@ -20,9 +22,10 @@ productId
 },{
  headers
 }).then((response)=>{
-    console.log(response.data.message);
+    console.log(response.data.data._id, "ADDDD");
     setnumber(response.data.numOfCartItems)
     // setPrice(response.data.totalCartPrice)
+    setCartId(response.data.data._id)
     toast.success(response.data.message)
     return response;
 }  ).catch((error)=>{ 
@@ -38,6 +41,7 @@ async function getCartProducts() {
         console.log(response);
         setnumber(response.data.numOfCartItems)
         setPrice(response.data.data.totalCartPrice)
+        setCartId(response.data.data._id)
 
         return response
         
@@ -74,6 +78,7 @@ count
     }).then((response)=>{
         console.log(response);
         setPrice(response.data.data.totalCartPrice)
+        setCartId(response.data.data._id) 
 
         return response
         
@@ -84,6 +89,45 @@ count
 
     })
 }
+async function onlinePayment(shippingAddress) {
+    return await axios.post(`https://ecommerce.routemisr.com/api/v1/orders/checkout-session/${ CartId}?url=http://localhost:5174`, {
+        shippingAddress    }, {
+        headers
+    }).then((response)=>{
+        console.log(response.data.session.url);
+        setnumber(response.data.numOfCartItems)
+        setPrice(response.data.totalCartPrice)
+window.location.href = response.data.session.url
+        return response
+        
+    }).catch((error)=>{
+        console.log(error);
+        return error
+        
+
+    })
+}
+async function cashPayment(shippingAddress) {
+    return await axios.post(`https://ecommerce.routemisr.com/api/v1/orders/${CartId}`, {
+        shippingAddress    }, {
+        headers
+    }).then((response)=>{
+        console.log(response);
+        setnumber(response.data.numOfCartItems)
+        setPrice(response.data.totalCartPrice)
+        window.location.href ="http://localhost:5173/allorders"
+
+        
+        return response
+        
+    }).catch((error)=>{
+        console.log(error);
+        return error
+        
+
+    })
+}
+
 
 async function  clearCart() {
     return axios.delete(`https://ecommerce.routemisr.com/api/v1/cart`,{
@@ -107,7 +151,7 @@ async function  clearCart() {
 
 
 
-    return <CartContext.Provider value={{addProductToCart, number, deleteProduct, getCartProducts, clearCart, Price, updateCartItem }}>
+    return <CartContext.Provider value={{addProductToCart, number, deleteProduct, getCartProducts, clearCart, Price, updateCartItem,onlinePayment, cashPayment }}>
 {props.children}
 
     </CartContext.Provider>

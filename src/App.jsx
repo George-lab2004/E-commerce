@@ -19,7 +19,8 @@ import WishList from './components/WishList/WishList.jsx';
 import ForgetPassword from './components/ForgetPassword/ForgetPassword.jsx';
 import Reset from './components/Reset-Code/Reset.jsx';
 import UpPs from './components/Update-Password/UpPs.jsx';
-
+import AllOrders from './components/AllOrders/AllOrders.jsx';
+import Checkout from './components/Checkout/Checkout.jsx';
 
 function App() {
   const queryClient = new QueryClient()
@@ -29,6 +30,9 @@ function App() {
     path: "", element: <Layout />, children: [
       { index: true, element: <ProtectedRoutes><Home /></ProtectedRoutes> },
       { path: "login", element: <ProtectedAuth><Login /></ProtectedAuth>  },
+      { path: "AllOrders", element: <ProtectedRoutes><AllOrders /></ProtectedRoutes>  },
+      { path: "checkout", element: <ProtectedRoutes><Checkout /></ProtectedRoutes>  },
+
       { path: "Forget", element: <ProtectedAuth><ForgetPassword/></ProtectedAuth>  },
       { path: "Code", element: <ProtectedAuth><Reset/></ProtectedAuth>  },
       { path: "update", element: <ProtectedAuth><UpPs/></ProtectedAuth>  },
