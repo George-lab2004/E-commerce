@@ -1,16 +1,21 @@
+// TokenContext.js
 import { createContext, useEffect, useState } from "react";
 
-export let TokenContext = createContext()
-export default function TokenContextProvider(props){
-const [token, setToken] =   useState(null)
-useEffect(()=>{
-if (localStorage.getItem("userToken")){
-    setToken(localStorage.getItem("userToken"));
-}
+export let TokenContext = createContext();
 
-},[])
-return <TokenContext.Provider value={{token , setToken}}>  
-{props.children}
-</TokenContext.Provider>
+export default function TokenContextProvider(props) {
+  const [token, setToken] = useState(null);
 
+  useEffect(() => {
+    const storedToken = localStorage.getItem("userToken");
+    if (storedToken) {
+      setToken(storedToken);
+    }
+  }, []);
+
+  return (
+    <TokenContext.Provider value={{ token, setToken }}>
+      {props.children}
+    </TokenContext.Provider>
+  );
 }

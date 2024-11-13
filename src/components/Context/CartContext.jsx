@@ -1,158 +1,158 @@
+// CartContext.js
+import { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
-import { createContext, useState } from "react";
 import toast from "react-hot-toast";
+import { TokenContext } from "./TokenContext"; // Import TokenContext to access token
 
 export let CartContext = createContext();
 
 export default function CartContextProvider(props) {
-    const [number, setnumber] = useState(0)
-    const [Price, setPrice] = useState(0)
-    const [CartId, setCartId] = useState(null)
+  const { token } = useContext(TokenContext); // Get token from TokenContext
+  const [number, setNumber] = useState(0);
+  const [price, setPrice] = useState(0);
+  const [cartId, setCartId] = useState(null);
 
-let headers = {
-    token : localStorage.getItem("userToken")
-}
+  // Set up headers using the token
+  const headers = { token: token || "" };
 
+  // Re-fetch cart data if token changes (after login)
+  useEffect(() => {
+    if (token) {
+      getCartProducts();
+    }
+  }, [token]);
 
+  // Add product to cart
+  async function addProductToCart(productId) {
+    try {
+      const response = await axios.post(
+        "https://ecommerce.routemisr.com/api/v1/cart",
+        { productId },
+        { headers }
+      );
+      setNumber(response.data.numOfCartItems);
+      setCartId(response.data.data._id);
+      toast.success(response.data.message);
+      return response;
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Error adding product");
+      return error;
+    }
+  }
 
-async function addProductToCart(productId) {
-return await axios.post("https://ecommerce.routemisr.com/api/v1/cart", {
-productId
+  // Get cart products
+  async function getCartProducts() {
+    try {
+      const response = await axios.get(
+        "https://ecommerce.routemisr.com/api/v1/cart",
+        { headers }
+      );
+      setNumber(response.data.numOfCartItems);
+      setPrice(response.data.data.totalCartPrice);
+      setCartId(response.data.data._id);
+      return response;
+    } catch (error) {
+      console.error("Error fetching cart products:", error);
+      return error;
+    }
+  }
 
-},{
- headers
-}).then((response)=>{
-    console.log(response.data.data._id, "ADDDD");
-    setnumber(response.data.numOfCartItems)
-    // setPrice(response.data.totalCartPrice)
-    setCartId(response.data.data._id)
-    toast.success(response.data.message)
-    return response;
-}  ).catch((error)=>{ 
-    toast.error(response.data.message)
-    return error;
-})
-}
+  // Delete a product from cart
+  async function deleteProduct(productId) {
+    try {
+      const response = await axios.delete(
+        `https://ecommerce.routemisr.com/api/v1/cart/${productId}`,
+        { headers }
+      );
+      setNumber(response.data.numOfCartItems);
+      setPrice(response.data.data.totalCartPrice);
+      return response;
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      return error;
+    }
+  }
 
-async function getCartProducts() {
-    return axios.get("https://ecommerce.routemisr.com/api/v1/cart",{
-        headers
-    }).then((response)=>{
-        console.log(response);
-        setnumber(response.data.numOfCartItems)
-        setPrice(response.data.data.totalCartPrice)
-        setCartId(response.data.data._id)
+  // Update cart item count
+  async function updateCartItem(productId, count) {
+    try {
+      const response = await axios.put(
+        `https://ecommerce.routemisr.com/api/v1/cart/${productId}`,
+        { count },
+        { headers }
+      );
+      setPrice(response.data.data.totalCartPrice);
+      setCartId(response.data.data._id);
+      return response;
+    } catch (error) {
+      console.error("Error updating cart item:", error);
+      return error;
+    }
+  }
 
-        return response
-        
-    }).catch((error)=>{
-        console.log(error);
-        return error
-        
+  // Clear the cart
+  async function clearCart() {
+    try {
+      const response = await axios.delete(
+        "https://ecommerce.routemisr.com/api/v1/cart",
+        { headers }
+      );
+      setNumber(response.data.numOfCartItems);
+      setPrice(response.data.data.totalCartPrice);
+      return response;
+    } catch (error) {
+      console.error("Error clearing cart:", error);
+      return error;
+    }
+  }
 
-    })
-}
+  // Online payment checkout
+  async function onlinePayment(shippingAddress) {
+    try {
+      const response = await axios.post(
+        `https://ecommerce.routemisr.com/api/v1/orders/checkout-session/${cartId}?url=http://localhost:5174`,
+        { shippingAddress },
+        { headers }
+      );
+      window.location.href = response.data.session.url;
+      return response;
+    } catch (error) {
+      console.error("Error processing online payment:", error);
+      return error;
+    }
+  }
 
-async function  deleteProduct(productId) {
-    return axios.delete(`https://ecommerce.routemisr.com/api/v1/cart/${productId}`,{
-        headers
-    }).then((response)=>{
-        console.log(response);
-        setnumber(response.data.numOfCartItems)
-        setPrice(response.data.data.totalCartPrice)
+  // Cash payment checkout
+  async function cashPayment(shippingAddress) {
+    try {
+      const response = await axios.post(
+        `https://ecommerce.routemisr.com/api/v1/orders/${cartId}`,
+        { shippingAddress },
+        { headers }
+      );
+      window.location.href = "http://localhost:5173/allorders";
+      return response;
+    } catch (error) {
+      console.error("Error processing cash payment:", error);
+      return error;
+    }
+  }
 
-        return response
-        
-    }).catch((error)=>{
-        console.log(error);
-        return error
-        
-
-    })
-}
-async function updateCartItem(productId, count) {
-    return await axios.put(`https://ecommerce.routemisr.com/api/v1/cart/${productId}`, {
-count
-    }, {
-        headers
-    }).then((response)=>{
-        console.log(response);
-        setPrice(response.data.data.totalCartPrice)
-        setCartId(response.data.data._id) 
-
-        return response
-        
-    }).catch((error)=>{
-        console.log(error);
-        return error
-        
-
-    })
-}
-async function onlinePayment(shippingAddress) {
-    return await axios.post(`https://ecommerce.routemisr.com/api/v1/orders/checkout-session/${ CartId}?url=http://localhost:5174`, {
-        shippingAddress    }, {
-        headers
-    }).then((response)=>{
-        console.log(response.data.session.url);
-        setnumber(response.data.numOfCartItems)
-        setPrice(response.data.totalCartPrice)
-window.location.href = response.data.session.url
-        return response
-        
-    }).catch((error)=>{
-        console.log(error);
-        return error
-        
-
-    })
-}
-async function cashPayment(shippingAddress) {
-    return await axios.post(`https://ecommerce.routemisr.com/api/v1/orders/${CartId}`, {
-        shippingAddress    }, {
-        headers
-    }).then((response)=>{
-        console.log(response);
-        setnumber(response.data.numOfCartItems)
-        setPrice(response.data.totalCartPrice)
-        window.location.href ="http://localhost:5173/allorders"
-
-        
-        return response
-        
-    }).catch((error)=>{
-        console.log(error);
-        return error
-        
-
-    })
-}
-
-
-async function  clearCart() {
-    return axios.delete(`https://ecommerce.routemisr.com/api/v1/cart`,{
-        headers
-    }).then((response)=>{
-        console.log(response);
-        setnumber(response.data.numOfCartItems)
-        setPrice(response.data.data.totalCartPrice)
-
-        return response
-        
-    }).catch((error)=>{
-        console.log(error);
-        return error
-        
-
-    })
-}
-
-
-
-
-
-    return <CartContext.Provider value={{addProductToCart, number, deleteProduct, getCartProducts, clearCart, Price, updateCartItem,onlinePayment, cashPayment }}>
-{props.children}
-
+  return (
+    <CartContext.Provider
+      value={{
+        addProductToCart,
+        number,
+        deleteProduct,
+        getCartProducts,
+        clearCart,
+        price,
+        updateCartItem,
+        onlinePayment,
+        cashPayment,
+      }}
+    >
+      {props.children}
     </CartContext.Provider>
+  );
 }
